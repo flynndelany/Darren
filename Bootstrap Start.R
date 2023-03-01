@@ -1,7 +1,5 @@
 #Bootstrap data
-library(dplyr)
-library(lmboot)
-library(boot)
+
 DataTrialBoot <- ALL_CP_Culture_RAW_R_Data_Neg %>%
   select(CLR = `Amended CL DW`, Treatment, Strain)
 #DataTrialBoot <- CP_RHODO_Culture_RAW_R_Data_Neg %>%
@@ -13,11 +11,13 @@ n <- 1000
 anovbt <- ANOVA.boot(CLR ~ Treatment + as.factor(Strain), B = n, data = DataTrialBoot, seed = 1996)
 anovbt$`p-values`
 
+#Bootstrap
 set.seed(1996)
 avgStrainBoot <- data.frame()
 avgTreatmentBoot <- data.frame()
 colnames(avgStrainBoot) <- c("Strain", "avgCLR")
 colnames(avgTreatmentBoot) <- c("Strain", "avgCLR")
+
 for (i in 1:n) {
   sampleDist = DataTrialBoot[sample(1:nrow(DataTrialBoot), nrow(DataTrialBoot), replace = T),]
   

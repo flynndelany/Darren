@@ -1,5 +1,8 @@
 library(tidyverse)
 library(readxl)
+library(ggplot2)
+library(lmboot)
+library(boot)
 
 ## Question 1: Who do they like when exposed to just one thing?
 
@@ -18,5 +21,12 @@ RhodoAlone <- RhodoAlone %>%
   filter(Treatment %in% Exp1Treats)
 
 AloneFull <- rbind(CocAlone, WildTypeAlone, RhodoAlone)
+AloneFull$Treatment <- as.ordered(AloneFull$Treatment)
 
 summary(AloneFull)
+
+ggplot(AloneFull, aes(x = Treatment, y = CR, color = Strain)) +
+  geom_boxplot()
+
+anovbt <- ANOVA.boot(CR ~ Treatment + Strain, B = 1000, data = AloneFull)
+anovbt$`p-values`
